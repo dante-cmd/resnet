@@ -2,7 +2,7 @@ VENV := .venv
 PY := $(VENV)/bin/python
 PIP := $(VENV)/bin/pip
 
-.PHONY: setup train evaluate serve test docker-build smoke
+.PHONY: setup data train evaluate serve test docker-build smoke
 
 setup:
 	python3 -m venv $(VENV)
@@ -10,10 +10,15 @@ setup:
 	$(PIP) install -r requirements.txt
 	$(PIP) install -e .
 
-smoke:      ## 1-epoch CPU training run to verify the pipeline end to end
+data:       ## download the CIFAR-10 dataset into ./data (idempotent)
+	$(PY) -c "from torchvision import datasets; \
+		datasets.CIFAR10('./data', train=True, download=True); \
+		datasets.CIFAR10('./data', train=False, download=True)"
+
+smoke: data  ## 1-epoch CPU training run to verify the pipeline end to end
 	$(PY) -m resnet_mlops.train --config configs/train.yaml --set train.epochs=1 data.batch_size=64
 
-train:      ## full training run (config in configs/train.yaml)
+train: data  ## full training run (config in configs/train.yaml)
 	$(PY) -m resnet_mlops.train --config configs/train.yaml
 
 evaluate:   ## evaluate checkpoints/best.pt on the test set

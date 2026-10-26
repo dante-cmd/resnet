@@ -16,13 +16,14 @@ serving/
   app.py                  FastAPI service (/health /ready /predict /predict/url)
   Dockerfile              CPU-slim image with the checkpoint baked in
 tests/                    unit tests (model, config, checkpoint round-trip)
-Makefile                  setup / smoke / train / evaluate / serve / test / docker-build
+Makefile                  setup / data / smoke / train / evaluate / serve / test / docker-build
 ```
 
 ## Quick start
 
 ```bash
 make setup        # venv + CPU torch + deps (no GPU assumed)
+make data         # download CIFAR-10 into ./data (idempotent; smoke/train also do this)
 make smoke        # 1-epoch run to verify the whole pipeline
 make train        # full training run, tracked in MLflow (./mlruns)
 make evaluate     # test-set metrics for checkpoints/best.pt
