@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "resnet-mlops"
+version = "0.1.0"
+description = "MLOps-grade ResNet: train, validate, test, track and deploy"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.1",
+    "torchvision>=0.16",
+    "numpy",
+    "PyYAML",
+    "scikit-learn>=1.4",
+]
+
+[project.optional-dependencies]
+tracking = ["mlflow>=2.9"]
+serving = ["fastapi>=0.110", "uvicorn>=0.29", "python-multipart"]
+dev = ["pytest>=8", "ruff"]
+
+[project.scripts]
+resnet-train = "resnet_mlops.train:main"
+resnet-eval = "resnet_mlops.evaluate:main"
+resnet-predict = "resnet_mlops.predict:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

@@ -1,0 +1,36 @@
+# Training configuration — override any key from the CLI, e.g.
+#   python -m resnet_mlops.train --config configs/train.yaml --epochs 5
+seed: 42
+device: auto            # auto | cpu | cuda
+
+data:
+  dataset: cifar10      # cifar10 | cifar100 | imagefolder
+  root: ./data
+  batch_size: 128
+  num_workers: 2
+  val_split: 0.1        # fraction of the train split held out for validation
+
+model:
+  num_classes: 10
+  blocks: [2, 2, 2, 2]  # ResNet-18 layout; [3,4,6,3] = ResNet-50
+
+train:
+  epochs: 20
+  lr: 0.1
+  momentum: 0.9
+  weight_decay: 5.0e-4
+  optimizer: sgd        # sgd | adamw
+  scheduler: cosine     # cosine | step | none
+  label_smoothing: 0.1
+  early_stopping_patience: 5
+
+tracking:
+  backend: mlflow       # mlflow | none
+  experiment_name: resnet-cifar10
+  run_name: null
+  tracking_uri: null    # null -> local ./mlruns
+
+output:
+  checkpoint_dir: checkpoints
+  best_model_name: best.pt
+  last_model_name: last.pt
